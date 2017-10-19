@@ -50,7 +50,11 @@ void runConvertToFloat32(float* out,
 
 half hostFloat2Half(float a) {
   half h;
+#if CUDA_VERSION >= 9000
+  HALF_AS_BITS(h) = cpu_float2half_rn(a).x;
+#else
   h.x = cpu_float2half_rn(a).x;
+#endif // CUDA_VERSION
   return h;
 }
 

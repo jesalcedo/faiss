@@ -30,6 +30,13 @@
 #include <cuda_fp16.h>
 #endif
 
+#if CUDA_VERSION >= 9000
+// CUDA 9.0 changes half handling. the x member previously accessible is no longer accessible
+// so we are defining this macro here to get access
+#define HALF_AS_BITS(h)             *((unsigned short *)(&(h)))
+
+#endif // CUDA_VERSION
+
 namespace faiss { namespace gpu {
 
 #ifdef FAISS_USE_FLOAT16

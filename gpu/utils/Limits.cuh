@@ -39,7 +39,11 @@ struct Limits<float> {
 
 inline __device__ __host__ half kGetHalf(unsigned short v) {
   half h;
+#if CUDA_VERSION >= 9000
+  HALF_AS_BITS(h) = v;
+#else
   h.x = v;
+#endif // CUDA_VERSION
   return h;
 }
 

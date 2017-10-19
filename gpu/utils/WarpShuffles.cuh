@@ -79,21 +79,38 @@ inline __device__ T* shfl_xor(T* const val,
 #ifdef FAISS_USE_FLOAT16
 inline __device__ half shfl(half v,
                             int srcLane, int width = kWarpSize) {
+#if CUDA_VERSION >= 9000
+  unsigned int vu = HALF_AS_BITS(v);
+#else
   unsigned int vu = v.x;
+#endif // CUDA_VERSION
   vu = __shfl(vu, srcLane, width);
 
   half h;
+#if CUDA_VERSION >= 9000
+  HALF_AS_BITS(h) = (unsigned short) vu;
+#else
   h.x = (unsigned short) vu;
+#endif // CUDA_VERSION
   return h;
 }
 
 inline __device__ half shfl_xor(half v,
                                 int laneMask, int width = kWarpSize) {
+#if CUDA_VERSION >= 9000
+  unsigned int vu = HALF_AS_BITS(v);
+#else
   unsigned int vu = v.x;
+#endif // CUDA_VERSION
+
   vu = __shfl_xor(vu, laneMask, width);
 
   half h;
+#if CUDA_VERSION >= 9000
+  HALF_AS_BITS(h) = (unsigned short) vu;
+#else
   h.x = (unsigned short) vu;
+#endif // CUDA_VERSION
   return h;
 }
 #endif
